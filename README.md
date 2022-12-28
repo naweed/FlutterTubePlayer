@@ -4,14 +4,14 @@
 
 ![TubePlayer](https://user-images.githubusercontent.com/103980/187330554-af91ea49-fd0f-423b-a283-ef5f4ba16e0a.png)
 
-A REAL and BEAUTIFUL Youtube Clone app built using .Net Maui. Features include:
+A REAL and BEAUTIFUL Youtube Clone app built using Flutter. Features include:
 - [X]  Real Youtube API Connection
 - [X]  Search for videos
 - [X]  Infinite Scrolling
-- [X]  Video Details
-- [X]  Share a video
-- [X]  Play the video
-- [X]  Download the Video
+- []  Video Details
+- []  Share a video
+- []  Play the video
+- []  Download the Video
 - [X]  And a nice UI Design
 
 
@@ -19,7 +19,7 @@ A REAL and BEAUTIFUL Youtube Clone app built using .Net Maui. Features include:
 
 You can follow the step-by-step implementation of this app on my Youtube Channel:
 
-[Building Real-World .Net MAUI Apps](https://www.youtube.com/playlist?list=PLPLcAzuCoR9-MtDrsgXfAoqICuTdA6JPa)
+[FLUTTER_JOURNEY: Porting a Maui app to Flutter](https://www.youtube.com/playlist?list=PLPLcAzuCoR9_8B3IqoVJG4pajtl8vijT7)
 
 
 ## The Result
