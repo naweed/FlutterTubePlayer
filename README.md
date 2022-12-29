@@ -7,11 +7,11 @@
 A REAL and BEAUTIFUL Youtube Clone app built using Flutter. Features include:
 - [X]  Real Youtube API Connection
 - [X]  Search for videos
-- [X]  Infinite Scrolling
-- [ ]  Video Details (WIP)
-- [ ]  Share a video (WIP)
-- [ ]  Play the video (WIP)
-- [ ]  Download the Video (WIP)
+- [ ]  Infinite Scrolling (until next video)
+- [ ]  Video Details (until next video)
+- [ ]  Share a video (until next video)
+- [ ]  Play the video (until next video)
+- [ ]  Download the Video (until next video)
 - [X]  And a nice UI Design
 
 
