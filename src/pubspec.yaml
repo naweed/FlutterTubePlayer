@@ -1,0 +1,39 @@
+name: tube_player
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.5 <3.0.0'
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  flutter:
+    sdk: flutter
+  flutter_spinkit: ^5.1.0
+  dio: ^4.0.6
+  stacked: ^3.0.1
+  avatar_view: ^1.0.1
+  cached_network_image: ^3.2.3
+
+dev_dependencies:
+
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: RegularFont
+      fonts:
+        - asset: assets/fonts/FiraSans-Light.ttf
+    - family: MediumFont
+      fonts:
+        - asset: assets/fonts/FiraSans-Medium.ttf
