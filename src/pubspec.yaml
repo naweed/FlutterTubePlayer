@@ -17,6 +17,7 @@ dependencies:
   stacked: ^3.0.1
   avatar_view: ^1.0.1
   cached_network_image: ^3.2.3
+  dio_http_cache: ^0.3.0
 
 dev_dependencies:
 

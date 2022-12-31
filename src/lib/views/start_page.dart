@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:tube_player/app_styles.dart';
 import 'package:tube_player/viewmodels/start_page_view_model.dart';
+import 'package:tube_player/views/video_details_page.dart';
 import '../models/youtube_models.dart';
 import '../viewcontrols/error_indicator.dart';
 import '../viewcontrols/loading_indicator.dart';
@@ -13,12 +14,21 @@ import '../viewcontrols/loading_indicator.dart';
 class StartPage extends StatelessWidget {
   late StartPageViewModel viewModel;
   final _searchBarController = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StartPageViewModel>.reactive(
       viewModelBuilder: () => StartPageViewModel(),
-      onModelReady: (vm) => vm.searchVideos(),
+      onModelReady: (vm) {
+        _scrollController.addListener(() {
+          if (_scrollController.position.pixels >
+              (0.95 * _scrollController.position.maxScrollExtent))
+            vm.loadMoreVideos();
+        });
+
+        vm.searchVideos();
+      },
       builder: (context, vm, child) {
         viewModel = vm;
 
@@ -65,6 +75,18 @@ class StartPage extends StatelessWidget {
             Expanded(
               child: _buildVideoList(),
             ),
+            SizedBox(height: 8),
+            Visibility(
+              visible: viewModel.isLoadingMore,
+              child: Center(
+                child: SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(kLightColor)),
+                ),
+              ),
+            ),
           ],
         ),
       );
@@ -74,100 +96,107 @@ class StartPage extends StatelessWidget {
 
   Widget _buildVideoList() {
     return ListView.builder(
+      controller: _scrollController,
       itemBuilder: (context, index) {
-        return _buildVideoCell(viewModel.YoutubeVideos[index]);
+        return _buildVideoCell(context, viewModel.YoutubeVideos[index]);
       },
       itemCount: viewModel.YoutubeVideos.length,
     );
   }
 
-  Widget _buildVideoCell(YoutubeVideo video) {
+  Widget _buildVideoCell(BuildContext context, YoutubeVideo video) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Card(
-        color: kCardFillColor,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12))),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              AspectRatio(
-                aspectRatio: 9 / 5,
-                child: CachedNetworkImage(
-                  imageUrl: video.snippet!.thumbnails!.high!.url!,
-                  placeholder: (context, url) => Center(
-                    child: SizedBox(
-                        width: 32,
-                        height: 32,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(kLightColor),
-                        )),
-                  ),
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.6),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          )
-                        ],
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        )),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              Row(
-                children: [
-                  AvatarView(
-                    radius: 18,
-                    borderWidth: 1,
-                    borderColor: kLightBorderColor,
-                    avatarType: AvatarType.CIRCLE,
-                    backgroundColor: Colors.transparent,
-                    imagePath: video.snippet!.channelImageURL!,
-                    placeHolder: Container(),
-                    errorWidget: Container(),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          video.snippet!.channelTitle!,
-                          style: kMediumLightText18,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          video.snippet!.title!,
-                          style: kRegularLightText14,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      ],
+      child: InkWell(
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => VideoDetailsPage(videoId: video.id!.videoId!))),
+        child: Card(
+          color: kCardFillColor,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12))),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                AspectRatio(
+                  aspectRatio: 9 / 5,
+                  child: CachedNetworkImage(
+                    imageUrl: video.snippet!.thumbnails!.high!.url!,
+                    placeholder: (context, url) => Center(
+                      child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(kLightColor),
+                          )),
+                    ),
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.6),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            )
+                          ],
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          )),
                     ),
                   ),
-                  SizedBox(width: 12),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: kLightBorderColor,
-                  ),
-                ],
-              ),
-            ],
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  children: [
+                    AvatarView(
+                      radius: 18,
+                      borderWidth: 1,
+                      borderColor: kLightBorderColor,
+                      avatarType: AvatarType.CIRCLE,
+                      backgroundColor: Colors.transparent,
+                      imagePath: video.snippet!.channelImageURL!,
+                      placeHolder: Container(),
+                      errorWidget: Container(),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            video.snippet!.channelTitle!,
+                            style: kMediumLightText18,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            video.snippet!.title!,
+                            style: kRegularLightText14,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: kLightBorderColor,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

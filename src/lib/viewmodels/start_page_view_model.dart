@@ -9,6 +9,7 @@ class StartPageViewModel extends BaseViewModel {
 
   String _nextToken = "";
   String _searchTerm = "iPhone 14";
+  bool isLoadingMore = false;
 
   List<YoutubeVideo> _youtubeVideos = [];
   List<YoutubeVideo> get YoutubeVideos => _youtubeVideos;
@@ -70,5 +71,17 @@ class StartPageViewModel extends BaseViewModel {
     _searchTerm = searchQuery.trim();
 
     await searchVideos();
+  }
+
+  Future<void> loadMoreVideos() async {
+    if (isLoadingMore || _nextToken.isEmpty) return;
+
+    isLoadingMore = true;
+    notifyListeners();
+
+    await _getTubeVideos();
+
+    isLoadingMore = false;
+    notifyListeners();
   }
 }

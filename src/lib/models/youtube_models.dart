@@ -1,3 +1,4 @@
+//Video Search Models
 class VideoSearchResult {
   String? nextPageToken;
   List<YoutubeVideo>? items;
@@ -45,6 +46,7 @@ class Snippet {
   String? description;
   Thumbnails? thumbnails;
   String? channelTitle;
+  List<String>? tags;
 
   //Local property/variable
   String? channelImageURL;
@@ -55,7 +57,8 @@ class Snippet {
       this.title,
       this.description,
       this.thumbnails,
-      this.channelTitle});
+      this.channelTitle,
+      this.tags});
 
   Snippet.fromJson(Map<String, dynamic> json) {
     publishedAt = json['publishedAt'];
@@ -66,6 +69,9 @@ class Snippet {
         ? new Thumbnails.fromJson(json['thumbnails'])
         : null;
     channelTitle = json['channelTitle'];
+    tags = json["tags"] != null
+        ? List<String>.from(json["tags"].map((x) => x))
+        : null;
   }
 }
 
@@ -92,7 +98,7 @@ class Thumbnail {
   }
 }
 
-//Channel Model
+//Channel Models
 
 class ChannelSearchResult {
   List<Channel>? items;
@@ -129,11 +135,67 @@ class Channel {
 class Statistics {
   String? viewCount;
   String? subscriberCount;
+  String? likeCount;
+  String? commentCount;
 
-  Statistics({this.viewCount, this.subscriberCount});
+  Statistics(
+      {this.viewCount,
+      this.subscriberCount,
+      this.commentCount,
+      this.likeCount});
 
   Statistics.fromJson(Map<String, dynamic> json) {
     viewCount = json['viewCount'];
     subscriberCount = json['subscriberCount'];
+    likeCount = json['likeCount'];
+    commentCount = json['commentCount'];
+  }
+}
+
+//Video Details Models
+class VideoDetailsResult {
+  List<YoutubeVideoDetail>? items;
+
+  VideoDetailsResult({this.items});
+
+  VideoDetailsResult.fromJson(Map<String, dynamic> json) {
+    if (json['items'] != null) {
+      items = <YoutubeVideoDetail>[];
+      json['items'].forEach((v) {
+        items!.add(new YoutubeVideoDetail.fromJson(v));
+      });
+    }
+  }
+}
+
+class YoutubeVideoDetail {
+  String? id;
+  Snippet? snippet;
+  ContentDetails? contentDetails;
+  Statistics? statistics;
+
+  YoutubeVideoDetail(
+      {this.id, this.snippet, this.contentDetails, this.statistics});
+
+  YoutubeVideoDetail.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    snippet =
+        json['snippet'] != null ? new Snippet.fromJson(json['snippet']) : null;
+    contentDetails = json['contentDetails'] != null
+        ? new ContentDetails.fromJson(json['contentDetails'])
+        : null;
+    statistics = json['statistics'] != null
+        ? new Statistics.fromJson(json['statistics'])
+        : null;
+  }
+}
+
+class ContentDetails {
+  String? duration;
+
+  ContentDetails({this.duration});
+
+  ContentDetails.fromJson(Map<String, dynamic> json) {
+    duration = json['duration'];
   }
 }
